@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post.title }}</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; line-height: 1.6; }
+        .container { max-width: 800px; margin: auto; }
+        h1 { color: #333; }
+        a { color: #007BFF; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ post.title }}</h1>
+        <p><strong>Por:</strong> {{ post.author.username }} em {{ post.created_at|date:"d M Y" }}</p>
+        <hr>
+        <div>
+            {{ post.content|linebreaks }}
+        </div>
+        <hr>
+        <a href="{% url 'post_list' %}">Voltar para a lista de posts</a>
+    </div>
+</body>
+</html>
