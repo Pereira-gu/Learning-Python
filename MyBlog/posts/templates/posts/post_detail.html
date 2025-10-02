@@ -1,8 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <title>{{ post.title }}</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'posts/img/icon.png' %}">
     <style>
         body { font-family: sans-serif; margin: 40px; line-height: 1.6; }
         .container { max-width: 800px; margin: auto; }
