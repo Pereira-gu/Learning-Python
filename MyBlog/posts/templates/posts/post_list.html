@@ -4,15 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'posts/img/icon.png' %}">
+    <link rel="stylesheet" href="{% static 'posts/css/style.css' %}">
     <title>Meu Blog</title>
-    <style>
-        body { font-family: sans-serif; margin: 40px; }
-        .post { margin-bottom: 40px; }
-        h1, h2 { color: #333; }
-        a { text-decoration: none; color: #007BFF; }
-    </style>
 </head>
 <body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="{% url 'post_list' %}">Página Inicial</a></li>
+            <li><a href="#">Sobre</a></li>
+            <li><a href="#">Contato</a></li>
+        </ul>
+    </nav>
+</header>
     <h1>Bem-vindo ao Meu Blog</h1>
 
     {% for post in posts %}

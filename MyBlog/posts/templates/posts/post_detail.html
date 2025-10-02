@@ -5,14 +5,18 @@
     <meta charset="UTF-8">
     <title>{{ post.title }}</title>
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'posts/img/icon.png' %}">
-    <style>
-        body { font-family: sans-serif; margin: 40px; line-height: 1.6; }
-        .container { max-width: 800px; margin: auto; }
-        h1 { color: #333; }
-        a { color: #007BFF; }
-    </style>
+    <link rel="stylesheet" href="{% static 'posts/css/style.css' %}">
 </head>
 <body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'post_list' %}">Página Inicial</a></li>
+                <li><a href="#">Sobre</a></li>
+                <li><a href="#">Contato</a></li>
+            </ul>
+        </nav>
+</header>
     <div class="container">
         <h1>{{ post.title }}</h1>
         <p><strong>Por:</strong> {{ post.author.username }} em {{ post.created_at|date:"d M Y" }}</p>
