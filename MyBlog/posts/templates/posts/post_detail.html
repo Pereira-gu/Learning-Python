@@ -32,6 +32,26 @@
         {{ post.content|linebreaks }}
     </div>
     <hr>
+    <h2>Comentários ({{ comments.count }})</h2>
+        <div id="comments-section">
+            {% for comment in comments %}
+                <div class="comment" style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+                    <p><strong>{{ comment.author }}</strong> em {{ comment.created_at|date:"d M Y, H:i" }}</p>
+                    <p>{{ comment.body|linebreaks }}</p>
+                </div>
+            {% empty %}
+                <p>Ainda não há comentários. Seja o primeiro a comentar!</p>
+            {% endfor %}
+        </div>
+
+        <hr>
+
+        <h2>Deixe um comentário</h2>
+        <form method="post">
+            {% csrf_token %} {{ form.as_p }} <button type="submit" style="padding: 10px 15px; background-color: #007BFF; color: white; border: none; cursor: pointer;">Enviar Comentário</button>
+        </form>
+
+        <br>
     <a href="{% url 'post_list' %}">Voltar para a lista de posts</a>
 </div>
 
