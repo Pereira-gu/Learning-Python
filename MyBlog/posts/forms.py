@@ -1,12 +1,12 @@
-from cProfile import label
 from django import forms
 from .models import Comment
+
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['author', 'text']
+        fields = ["author_anonymous", "text"]
         labels = {
-            'author': 'Your Name',
-            'text': 'Comment',
+            "author_anonymous": "Your Name",
+            "text": "Comment",
         }

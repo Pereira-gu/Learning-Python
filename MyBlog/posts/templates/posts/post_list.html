@@ -14,10 +14,23 @@
     <nav class="navbar">
         <a href="{% url 'post_list' %}" style="color: white; text-decoration: none; font-size: 1.5em; font-weight: bold;">Meu Blog</a>
         <ul class="nav-links">
-            <li><a href="{% url 'post_list' %}">Página Inicial</a></li>
-            <li><a href="#">Sobre</a></li>
-            <li><a href="#">Contato</a></li>
-        </ul>
+    <li><a href="{% url 'post_list' %}">Página Inicial</a></li>
+    {% if user.is_authenticated %}
+        <li><a href="#">Sobre</a></li>
+        <li><a href="#">Contato</a></li>
+        <li>
+    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" style="background:none; border:none; color:white; font-weight:bold; cursor:pointer; padding: 20px 0;">
+            Logout ({{ user.username }})
+        </button>
+    </form>
+</li>
+    {% else %}
+        <li><a href="{% url 'login' %}">Login</a></li>
+        <li><a href="{% url 'signup' %}">Registar</a></li>
+    {% endif %}
+</ul>
         <div class="hamburger">
             <i class="fas fa-bars"></i>
         </div>

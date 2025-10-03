@@ -14,10 +14,23 @@
     <nav class="navbar">
         <a href="{% url 'post_list' %}" style="color: white; text-decoration: none; font-size: 1.5em; font-weight: bold;">Meu Blog</a>
         <ul class="nav-links">
-            <li><a href="{% url 'post_list' %}">Página Inicial</a></li>
-            <li><a href="#">Sobre</a></li>
-            <li><a href="#">Contato</a></li>
-        </ul>
+    <li><a href="{% url 'post_list' %}">Página Inicial</a></li>
+    {% if user.is_authenticated %}
+        <li><a href="#">Sobre</a></li>
+        <li><a href="#">Contato</a></li>
+        <li>
+    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" style="background:none; border:none; color:white; font-weight:bold; cursor:pointer; padding: 20px 0;">
+            Logout ({{ user.username }})
+        </button>
+    </form>
+</li>
+    {% else %}
+        <li><a href="{% url 'login' %}">Login</a></li>
+        <li><a href="{% url 'signup' %}">Registar</a></li>
+    {% endif %}
+</ul>
         <div class="hamburger">
             <i class="fas fa-bars"></i>
         </div>
@@ -32,24 +45,33 @@
         {{ post.content|linebreaks }}
     </div>
     <hr>
-    <h2>Comentários ({{ comments.count }})</h2>
-        <div id="comments-section">
-            {% for comment in comments %}
-                <div class="comment" style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
-                    <p><strong>{{ comment.author }}</strong> em {{ comment.created_at|date:"d M Y, H:i" }}</p>
-                    <p>{{ comment.body|linebreaks }}</p>
-                </div>
-            {% empty %}
-                <p>Ainda não há comentários. Seja o primeiro a comentar!</p>
-            {% endfor %}
+<h2>Comentários ({{ comments.count }})</h2>
+<div id="comments-section">
+    {% for comment in comments %}
+        <div class="comment" style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+            <p><strong>
+                {% if comment.user %}{{ comment.user.username }}{% else %}{{ comment.author_anonymous|default:'Anónimo' }}{% endif %}
+            </strong> em {{ comment.created_at|date:"d M Y, H:i" }}</p>
+            <p>{{ comment.text|linebreaks }}</p>
         </div>
-
-        <hr>
-
-        <h2>Deixe um comentário</h2>
-        <form method="post">
-            {% csrf_token %} {{ form.as_p }} <button type="submit" style="padding: 10px 15px; background-color: #007BFF; color: white; border: none; cursor: pointer;">Enviar Comentário</button>
-        </form>
+    {% empty %}
+        <p>Ainda não há comentários.</p>
+    {% endfor %}
+</div>
+<hr>
+<h2>Deixe um comentário</h2>
+<form method="post">
+    {% csrf_token %}
+    {% if user.is_authenticated %}
+        <p>Comentando como: <strong>{{ user.username }}</strong></p>
+        <div style="display:none;">{{ form.author_anonymous }}</div> {{ form.text.label_tag }}
+        {{ form.text }}
+    {% else %}
+        {{ form.as_p }}
+    {% endif %}
+    <br>
+    <button type="submit" style="padding: 10px 15px; background-color: #007BFF; color: white; border: none; cursor: pointer;">Enviar Comentário</button>
+</form>
 
         <br>
     <a href="{% url 'post_list' %}">Voltar para a lista de posts</a>
