@@ -1,68 +1,41 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ post.title }}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-    <link rel="icon" type="image/png" href="{% static 'posts/img/icon.png' %}">
-    <link rel="stylesheet" href="{% static 'posts/css/style.css' %}">
-</head>
-<body>
-<header>
-    <nav class="navbar">
-        <a href="{% url 'post_list' %}" style="color: white; text-decoration: none; font-size: 1.5em; font-weight: bold;">Meu Blog</a>
-        <ul class="nav-links">
-            <li><a href="{% url 'post_list' %}">Página Inicial</a></li>
-            <li><a href="#">Sobre</a></li>
-            <li><a href="#">Contato</a></li>
-        </ul>
-        <div class="hamburger">
-            <i class="fas fa-bars"></i>
-        </div>
-    </nav>
-</header>
+{% extends 'posts/base.html' %}
 
-<div class="container">
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
     <h1>{{ post.title }}</h1>
-    <p><strong>Por:</strong> {{ post.author.username }} em {{ post.created_at|date:"d M Y" }}</p>
+    <p class="post-meta">Por: {{ post.author.username }} em {{ post.created_at|date:"d M Y" }}</p>
     <hr>
     <div>
         {{ post.content|linebreaks }}
     </div>
     <hr>
+
     <h2>Comentários ({{ comments.count }})</h2>
-        <div id="comments-section">
-            {% for comment in comments %}
-                <div class="comment" style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
-                    <p><strong>{{ comment.author }}</strong> em {{ comment.created_at|date:"d M Y, H:i" }}</p>
-                    <p>{{ comment.body|linebreaks }}</p>
-                </div>
-            {% empty %}
-                <p>Ainda não há comentários. Seja o primeiro a comentar!</p>
-            {% endfor %}
-        </div>
+    <div id="comments-section">
+        {% for comment in comments %}
+            <div class="comment">
+                <p><strong>{% if comment.user %}{{ comment.user.username }}{% else %}{{ comment.author_anonymous|default:'Anónimo' }}{% endif %}</strong>
+                <span style="color: #888; font-size: 0.9em;">em {{ comment.created_at|date:"d M Y, H:i" }}</span></p>
+                <p>{{ comment.text|linebreaks }}</p>
+            </div>
+        {% empty %}
+            <p>Ainda não há comentários. Seja o primeiro a comentar!</p>
+        {% endfor %}
+    </div>
+    <hr>
 
-        <hr>
-
-        <h2>Deixe um comentário</h2>
-        <form method="post">
-            {% csrf_token %} {{ form.as_p }} <button type="submit" style="padding: 10px 15px; background-color: #007BFF; color: white; border: none; cursor: pointer;">Enviar Comentário</button>
-        </form>
-
-        <br>
-    <a href="{% url 'post_list' %}">Voltar para a lista de posts</a>
-</div>
-
-<script>
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.querySelector('.nav-links');
-
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('nav-active');
-    });
-</script>
-
-</body>
-</html>
+    <h2>Deixe um comentário</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% if user.is_authenticated %}
+            <p>Comentando como: <strong>{{ user.username }}</strong></p>
+            <div style="display:none;">{{ form.author_anonymous }}</div>
+            <p>{{ form.text.label_tag }}</p>
+            <p>{{ form.text }}</p>
+        {% else %}
+            {{ form.as_p }}
+        {% endif %}
+        <button type="submit">Enviar Comentário</button>
+    </form>
+{% endblock %}
